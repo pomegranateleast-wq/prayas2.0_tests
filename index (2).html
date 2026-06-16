@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Prayas 2027</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#FF6900"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Prayas"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --orange:#FF6900;
+  --orange-light:#FF8533;
+  --orange-pale:#FFF0E6;
+  --orange-pale2:#FFE4CC;
+  --bg:#F2F2F7;
+  --bg2:#E8E8ED;
+  --white:#FFFFFF;
+  --card:#FFFFFF;
+  --text:#1C1C1E;
+  --text2:#3C3C43;
+  --text3:#8E8E93;
+  --text4:#AEAEB2;
+  --border:rgba(60,60,67,0.12);
+  --border2:rgba(60,60,67,0.18);
+  --blue:#0A84FF;
+  --purple:#BF5AF2;
+  --green:#30D158;
+  --red:#FF3B30;
+  --jm:#0A84FF;
+  --jm-bg:#E5F2FF;
+  --adv:#BF5AF2;
+  --adv-bg:#F5EEFF;
+  --aits:#FF6900;
+  --aits-bg:#FFF0E6;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+html{height:100%;overflow:hidden;font-size:16px}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+.header{
+  background:var(--white);
+  padding:calc(12px + var(--safe-top)) 20px 0;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  position:relative;
+  z-index:10;
+}
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-pill{
+  background:var(--orange);
+  color:#fff;
+  font-size:13px;font-weight:700;
+  padding:5px 12px;
+  border-radius:20px;
+  letter-spacing:-0.2px;
+}
+.header-title{
+  font-size:17px;font-weight:600;
+  color:var(--text);
+  letter-spacing:-0.4px;
+}
+.header-sub{
+  font-size:12px;color:var(--text3);
+  font-weight:400;
+  margin-top:1px;
+}
+
+/* COUNTDOWN CHIP */
+.next-chip{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+}
+.next-label{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:0.3px}
+.next-val{
+  font-size:15px;font-weight:700;
+  color:var(--orange);
+  letter-spacing:-0.5px;
+  line-height:1.1;
+}
+.next-name{font-size:11px;color:var(--text3);font-weight:400}
+
+/* FILTERS */
+.filter-scroll{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:12px 20px;
+  margin:0 -20px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.filter-scroll::-webkit-scrollbar{display:none}
+.chip{
+  flex-shrink:0;
+  padding:7px 16px;
+  border-radius:20px;
+  font-size:13px;font-weight:500;
+  border:1.5px solid var(--border);
+  background:var(--white);
+  color:var(--text2);
+  cursor:pointer;
+  transition:all 0.18s;
+  white-space:nowrap;
+}
+.chip.all.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.chip.jm.on{background:var(--jm-bg);border-color:var(--jm);color:var(--jm)}
+.chip.adv.on{background:var(--adv-bg);border-color:var(--adv);color:var(--adv)}
+.chip.aits.on{background:var(--aits-bg);border-color:var(--aits);color:var(--aits)}
+
+/* ── MAIN SCROLL ── */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.scroll-area{flex:1;overflow-y:auto;padding:0 16px calc(16px + var(--safe-bot));scrollbar-width:none}
+.scroll-area::-webkit-scrollbar{display:none}
+
+/* PROGRESS CARD */
+.progress-card{
+  background:var(--white);
+  border-radius:18px;
+  padding:16px 18px;
+  margin:14px 0 10px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.progress-icon{
+  width:42px;height:42px;
+  background:var(--orange-pale);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.progress-icon svg{width:20px;height:20px;fill:var(--orange)}
+.progress-info{flex:1;min-width:0}
+.progress-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.progress-bar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-light));border-radius:3px;transition:width 0.5s ease}
+.progress-sub{font-size:11px;color:var(--text3)}
+.progress-pct{font-size:22px;font-weight:700;color:var(--orange);letter-spacing:-1px;flex-shrink:0}
+
+/* CALENDAR CARD */
+.cal-card{
+  background:var(--white);
+  border-radius:22px;
+  overflow:hidden;
+  margin-bottom:14px;
+}
+.cal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 10px;
+}
+.cal-month-label{
+  font-size:20px;font-weight:700;
+  letter-spacing:-0.6px;
+  color:var(--text);
+}
+.cal-year-label{
+  font-size:14px;font-weight:400;
+  color:var(--text3);
+  margin-left:6px;
+}
+.nav-row{display:flex;align-items:center;gap:4px}
+.nav-btn{
+  width:32px;height:32px;
+  border-radius:10px;
+  border:none;
+  background:var(--bg);
+  color:var(--text2);
+  cursor:pointer;
+  font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s;
+  font-family:'Inter',sans-serif;
+}
+.nav-btn:active{background:var(--bg2)}
+.today-btn{
+  height:32px;
+  border-radius:10px;
+  border:none;
+  background:var(--bg);
+  color:var(--orange);
+  cursor:pointer;
+  font-size:12px;font-weight:600;
+  padding:0 12px;
+  margin-right:4px;
+  font-family:'Inter',sans-serif;
+  transition:background 0.15s;
+}
+.today-btn:active{background:var(--bg2)}
+
+.day-row{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  padding:0 12px 6px;
+}
+.day-lbl{
+  text-align:center;
+  font-size:11px;font-weight:600;
+  color:var(--text4);
+  letter-spacing:0.5px;
+  padding:4px 0;
+}
+
+.cal-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:3px;
+  padding:0 12px 14px;
+}
+.cell{
+  aspect-ratio:1;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:6px;
+  cursor:default;
+  position:relative;
+  transition:background 0.15s;
+}
+.cell.other{opacity:0.3}
+.cell.has-test{cursor:pointer}
+.cell.has-test:active{background:var(--bg)}
+.cell-num{
+  font-size:14px;font-weight:500;
+  color:var(--text);
+  line-height:1;
+}
+.cell.other .cell-num{color:var(--text4)}
+.cell.today .cell-num{
+  width:26px;height:26px;
+  background:var(--orange);
+  color:#fff;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;
+  font-size:13px;
+}
+.cell.selected{background:var(--orange-pale)}
+.cell.selected .cell-num{color:var(--orange)}
+.dots{
+  display:flex;gap:2px;margin-top:3px;flex-wrap:wrap;justify-content:center;max-width:100%;
+}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot.jm{background:var(--jm)}
+.dot.adv{background:var(--adv)}
+.dot.aits{background:var(--aits)}
+.dot.done{background:var(--green)}
+.cell-check{
+  position:absolute;
+  top:4px;right:4px;
+  width:12px;height:12px;
+  background:var(--green);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.cell-check svg{width:7px;height:7px;stroke:#fff;stroke-width:2.5;fill:none}
+
+/* ── BOTTOM SHEET ── */
+.sheet-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.4);
+  z-index:100;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s;
+  backdrop-filter:blur(2px);
+}
+.sheet-overlay.open{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:var(--white);
+  border-radius:24px 24px 0 0;
+  z-index:101;
+  transform:translateY(100%);
+  transition:transform 0.4s cubic-bezier(0.32,0.72,0,1);
+  max-height:88vh;
+  display:flex;
+  flex-direction:column;
+  padding-bottom:var(--safe-bot);
+}
+.sheet.open{transform:translateY(0)}
+.sheet-handle{
+  width:36px;height:4px;
+  background:var(--border2);
+  border-radius:2px;
+  margin:10px auto 0;
+  flex-shrink:0;
+}
+.sheet-scroll{
+  flex:1;
+  overflow-y:auto;
+  padding:16px 20px 20px;
+  scrollbar-width:none;
+}
+.sheet-scroll::-webkit-scrollbar{display:none}
+
+.sheet-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:20px;
+  padding:5px 12px;
+  font-size:12px;font-weight:600;
+  margin-bottom:12px;
+  letter-spacing:0.1px;
+}
+.sheet-badge.jm{background:var(--jm-bg);color:var(--jm)}
+.sheet-badge.adv{background:var(--adv-bg);color:var(--adv)}
+.sheet-badge.aits{background:var(--aits-bg);color:var(--aits)}
+.badge-dot{width:6px;height:6px;border-radius:50%}
+.jm .badge-dot{background:var(--jm)}
+.adv .badge-dot{background:var(--adv)}
+.aits .badge-dot{background:var(--aits)}
+
+.sheet-title{
+  font-size:24px;font-weight:700;
+  letter-spacing:-0.8px;
+  color:var(--text);
+  margin-bottom:4px;
+  line-height:1.15;
+}
+.sheet-date{
+  font-size:13px;color:var(--text3);
+  font-weight:400;
+  margin-bottom:4px;
+}
+.sheet-countdown{
+  font-size:13px;
+  color:var(--text2);
+  margin-bottom:18px;
+  display:flex;align-items:center;gap:6px;
+}
+.sheet-countdown strong{color:var(--orange);font-weight:700}
+
+/* DONE BUTTON */
+.done-btn{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  font-size:15px;font-weight:600;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  transition:all 0.2s;
+  margin-bottom:20px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--bg);
+  color:var(--text2);
+}
+.done-btn.marked{background:var(--green);color:#fff}
+.done-btn:active{opacity:0.85}
+.done-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.2;fill:none}
+
+/* SYLLABUS */
+.syl-label{
+  font-size:11px;font-weight:700;
+  color:var(--text3);
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.subject-card{
+  background:var(--bg);
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.subj-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 16px;
+  cursor:pointer;
+  user-select:none;
+}
+.subj-left{display:flex;align-items:center;gap:10px}
+.subj-icon{
+  width:32px;height:32px;
+  border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.subj-icon.p{background:#E5F2FF}
+.subj-icon.c{background:#FFF3E0}
+.subj-icon.m{background:#F3E5FF}
+.subj-icon svg{width:16px;height:16px}
+.subj-name{font-size:14px;font-weight:600;color:var(--text)}
+.subj-count{font-size:12px;color:var(--text3);margin-top:1px}
+.subj-arrow{
+  font-size:12px;color:var(--text4);
+  transition:transform 0.22s;
+}
+.subj-arrow.open{transform:rotate(180deg)}
+.topics{
+  padding:0 16px 12px;
+  display:none;
+}
+.topics.open{display:block}
+.topic{
+  padding:7px 0;
+  font-size:13px;
+  color:var(--text2);
+  border-top:1px solid var(--border);
+  line-height:1.45;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.topic::before{
+  content:'';
+  width:5px;height:5px;
+  border-radius:50%;
+  background:var(--text4);
+  flex-shrink:0;
+  margin-top:5px;
+}
+
+/* INSTALL BAR */
+#installBar{
+  display:none;
+  align-items:center;
+  gap:12px;
+  background:var(--orange);
+  padding:12px 20px;
+  flex-shrink:0;
+}
+#installBar span{flex:1;font-size:13px;font-weight:500;color:#fff}
+#installBar button{
+  background:rgba(255,255,255,0.2);
+  border:1.5px solid rgba(255,255,255,0.5);
+  color:#fff;
+  border-radius:10px;
+  padding:6px 14px;
+  font-size:13px;font-weight:600;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+}
+
+/* LEGEND */
+.legend{
+  display:flex;gap:14px;flex-wrap:wrap;
+  padding:0 18px 12px;
+}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.leg-dot.jm{background:var(--jm)}
+.leg-dot.adv{background:var(--adv)}
+.leg-dot.aits{background:var(--aits)}
+.leg-dot.done{background:var(--green)}
+</style>
+</head>
+<body>
+
+<div id="installBar">
+  <span>Install Prayas for offline access</span>
+  <button onclick="doInstall()">Install</button>
+</div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-row">
+      <span class="logo-pill">PRAYAS</span>
+      <div>
+        <div class="header-title">JEE 2.0 Planner</div>
+        <div class="header-sub">Batch 2027</div>
+      </div>
+    </div>
+    <div class="next-chip">
+      <div class="next-label">NEXT TEST</div>
+      <div class="next-val" id="nextDays">—</div>
+      <div class="next-name" id="nextName">—</div>
+    </div>
+  </div>
+  <div class="filter-scroll">
+    <button class="chip all on" onclick="setFilter('all',this)">All</button>
+    <button class="chip jm" onclick="setFilter('JEE Main',this)">JEE Main</button>
+    <button class="chip adv" onclick="setFilter('JEE Advanced',this)">JEE Advanced</button>
+    <button class="chip aits" onclick="setFilter('AITS',this)">AITS</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="scroll-area">
+
+    <div class="progress-card">
+      <div class="progress-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-1 14.5-4-4 1.41-1.41L11 13.67l6.59-6.59L19 8.5z"/></svg>
+      </div>
+      <div class="progress-info">
+        <div class="progress-title">Tests Completed</div>
+        <div class="progress-bar"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
+        <div class="progress-sub" id="pSub">0 of 31 done</div>
+      </div>
+      <div class="progress-pct" id="pPct">0%</div>
+    </div>
+
+    <div class="cal-card">
+      <div class="cal-header">
+        <div>
+          <span class="cal-month-label" id="mLabel">June</span>
+          <span class="cal-year-label" id="yLabel">2026</span>
+        </div>
+        <div class="nav-row">
+          <button class="today-btn" onclick="goToday()">Today</button>
+          <button class="nav-btn" onclick="mv(-1)">‹</button>
+          <button class="nav-btn" onclick="mv(1)">›</button>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-lbl">S</div><div class="day-lbl">M</div><div class="day-lbl">T</div>
+        <div class="day-lbl">W</div><div class="day-lbl">T</div><div class="day-lbl">F</div>
+        <div class="day-lbl">S</div>
+      </div>
+      <div class="cal-grid" id="grid"></div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot jm"></div>JEE Main</div>
+        <div class="leg-item"><div class="leg-dot adv"></div>JEE Advanced</div>
+        <div class="leg-item"><div class="leg-dot aits"></div>AITS</div>
+        <div class="leg-item"><div class="leg-dot done"></div>Completed</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SHEET -->
+<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-scroll" id="sheetBody"></div>
+</div>
+
+<script>
+const TESTS=[
+  {id:1,name:"JEE Main-1",date:"2026-06-28",type:"JEE Main",
+   p:["Mathematical Tools (Complete Chapter)"],
+   c:["Nature of Matter & Classification","International System of Units (S.I.)","Uncertainty in Measurement","Laws of Chemical Combinations","Dalton's Atomic Theory, Atomic Mass Unit","Mole and Molar Mass","Average Atomic Mass"],
+   m:["Basic Mathematics (Complete Chapter)"]},
+  {id:2,name:"JEE Main-2",date:"2026-07-12",type:"JEE Main",
+   p:["Motion in a Straight Line (Complete Chapter)","Motion in a Plane — Intro, Projectile Motion, Relative Velocity, Circular Motion"],
+   c:["Some Basic Concepts of Chemistry (Complete Chapter)"],
+   m:["Quadratic Equations — Introduction, Common Roots"]},
+  {id:3,name:"JEE Advanced-1",date:"2026-07-26",type:"JEE Advanced",
+   p:["Motion in a Straight Line (Complete Chapter)","Motion in a Plane (Complete Chapter)"],
+   c:["Some Basic Concepts of Chemistry","Redox Reaction (Complete Chapter)"],
+   m:["Basic Mathematics (Complete Chapter)","Quadratic Equations (Complete Chapter)"]},
+  {id:4,name:"AITS-1",date:"2026-08-09",type:"AITS",
+   p:["Motion in a Straight Line","Laws of Motion","Work, Energy and Power"],
+   c:["Some Basic Concepts of Chemistry — Solutions"],
+   m:["Basic Maths (Complete Chapter)","Sequence and Series"]},
+  {id:5,name:"JEE Main-3",date:"2026-08-23",type:"JEE Main",
+   p:["Laws of Motion (Complete Chapter)","Work, Energy and Power (Complete Chapter)","Circular Motion (Complete Chapter)","Centre of Mass & System of Particles (Complete Chapter)"],
+   c:["Structure of Atom (Complete Chapter)","Classification of Elements and Periodicity in Properties (Complete Chapter)","Chemical Bonding and Molecular Structure (Complete Chapter)"],
+   m:["Sequence and Series (Complete Chapter)","Trigonometric Functions (Complete Chapter)","Trigonometric Equation (Complete Chapter)","Permutations and Combinations (Complete Chapter)"]},
+  {id:6,name:"JEE Main-4",date:"2026-09-06",type:"JEE Main",
+   p:["Rotational Motion — Definition of Rigid Body, Moment of Inertia","Moment of Inertia of system of particles","Parallel Axis Theorem, Perpendicular Axis Theorem","Radius of gyration","Moment of inertia of compound objects","Torque, Rotational equilibrium","Kinetic energy of rotation about fixed axis","Angular momentum, conservation","Combined translational and rotational motion"],
+   c:["Solutions (Complete Chapter)","Chemical Kinetics — Rate of Reaction, Rate Law, Rate Constant","Factors Affecting Reaction Rate","Order and Molecularity of Reaction","Integrated Rate Equations","Collision Theory of Chemical Reactions","Activation Energy and Transition State Theory","Temperature Dependence of Rate of Reaction","Potential Energy Curves","Ratio of Two Rate Constants at Different Temperatures"],
+   m:["Binomial Theorem (Complete Chapter)"]},
+  {id:7,name:"AITS-2",date:"2026-09-20",type:"AITS",
+   p:["Centre of Mass & System of Particles","Mechanical Properties of Solids","Mechanical Properties of Fluids"],
+   c:["Thermodynamics","Equilibrium","Electrochemistry","Chemical Kinetics"],
+   m:["Trigonometric Functions","Trigonometric Equation","Determinants"]},
+  {id:8,name:"AITS-3",date:"2026-09-27",type:"AITS",
+   p:["Motion in a Straight Line","Work, Energy and Power","Centre of Mass & System of Particles","Rotational Motion","Mechanical Properties of Solids","Mechanical Properties of Fluids"],
+   c:["Some Basic Concepts of Chemistry","Redox Reactions","Solutions","Thermodynamics","Electrochemistry","Chemical Kinetics"],
+   m:["Basic Maths","Quadratic Equations","Sequence and Series","Trigonometric Functions","Trigonometric Equation","Determinants"]},
+  {id:9,name:"JEE Advanced-2",date:"2026-10-11",type:"JEE Advanced",
+   p:["Laws of Motion","Work, Energy and Power","Circular Motion","Centre of Mass & System of Particles","Rotational Motion","Mechanical Properties of Solids","Thermal Properties of Matter","Kinetic Theory","Thermodynamics","Mechanical Properties of Fluids","Oscillations — all Complete Chapters"],
+   c:["Structure of Atom","Classification of Elements and Periodicity","Chemical Bonding and Molecular Structure","Solutions","Chemical Kinetics","Thermodynamics","Chemical Equilibrium","Ionic Equilibrium — all Complete Chapters"],
+   m:["Sequence and Series","Trigonometric Functions","Trigonometric Equation","Permutations and Combinations","Binomial Theorem","Straight Lines","Circles","Conic Sections — Parabola, Ellipse, Hyperbola — all Complete Chapters"]},
+  {id:10,name:"AITS-4",date:"2026-11-01",type:"AITS",
+   p:["Thermal Properties of Matter","Thermodynamics","Oscillations","Electric Charges and Fields","Electrostatic Potential and Capacitance"],
+   c:["Classification of Elements and Periodicity in Properties","Chemical Bonding and Molecular Structure","Organic Chemistry — IUPAC Nomenclature","Organic Chemistry — Isomerism","General Organic Chemistry"],
+   m:["Matrices","Relations and Functions","Continuity and Differentiability","Method of Differentiation","Determinants (Complete Chapter)"]},
+  {id:11,name:"JEE Main-5",date:"2026-11-22",type:"JEE Main",
+   p:["Waves (Complete Chapter)","Electric Charges and Fields","Electrostatic Potential and Capacitance","Gravitation (Complete Chapter)","Current Electricity — Current in Conductors, Kirchhoff's Laws, Combination of Resistances, Wheatstone Bridge"],
+   c:["Electrochemistry (Complete Chapter)","Some Basic Principles and Techniques — IUPAC Nomenclature","General Organic Chemistry (GOC, Complete Chapter)"],
+   m:["Sets (Complete Chapter)","Relations and Functions (Complete Chapter)","Inverse Trigonometric Functions (Complete Chapter)"]},
+  {id:12,name:"AITS-5",date:"2026-12-13",type:"AITS",
+   p:["Waves","Current Electricity","Moving Charges and Magnetism","Magnetism and Matter","Electromagnetic Induction","Electromagnetic Waves — all Complete Chapters"],
+   c:["Hydrocarbons","Haloarenes and Halocarbons","Alcohols, Phenols and Ethers","Aldehydes, Ketones and Carboxylic Acids","Amines"],
+   m:["Application of Derivatives","Indefinite Integration","Application of Integrals","Straight Lines","Circles","Conic Sections — Parabola, Ellipse, Hyperbola"]},
+  {id:13,name:"AITS-6",date:"2026-12-20",type:"AITS",
+   p:["Thermal Properties of Matter","Kinetic Theory","Thermodynamics","Electric Charges and Fields","Electrostatic Potential and Capacitance","Waves","Current Electricity","Moving Charges and Magnetism","Magnetism and Matter","Electromagnetic Induction","Electromagnetic Waves"],
+   c:["Classification of Elements and Periodicity","Chemical Bonding and Molecular Structure","Organic Chemistry — IUPAC Nomenclature, Isomerism, GOC","Hydrocarbons","Haloarenes and Halocarbons","Alcohols, Phenols and Ethers","Aldehydes, Ketones and Carboxylic Acids","Amines"],
+   m:["Matrices","Inverse Trigonometric Functions","Continuity and Differentiability","Method of Differentiation","Indefinite Integration","Application of Derivatives","Application of Integrals","Differential Equations","Circles","Conic Sections — Parabola, Ellipse, Hyperbola"]},
+  {id:14,name:"JEE Main-6",date:"2027-01-03",type:"JEE Main",
+   p:["Current Electricity (Complete Chapter)","Moving Charges and Magnetism (Complete Chapter)","Magnetism and Matter (Complete Chapter)","Electromagnetic Induction (Complete Chapter)","Alternating Current (Complete Chapter)","Electromagnetic Waves (Complete Chapter)","Ray Optics and Optical Instruments (Complete Chapter)"],
+   c:["Some Basic Principles and Techniques — Zoomerism (Complete Chapter)","Hydrocarbon (Complete Chapter)","Coordination Compounds","The d and f block Elements","Haloarenes and Halocarbons","Alcohols, Phenols and Ethers","Aldehydes, Ketones and Carboxylic Acids"],
+   m:["Method of Differentiation (Complete Chapter)","Limit, Continuity and Differentiability (Complete Chapter)","Indefinite Integration (Complete Chapter)","Application of Derivatives (Complete Chapter)","Definite Integration (Complete Chapter)","Application of Integrals (Complete Chapter)","Differential Equation (Complete Chapter)","Vector Algebra (Complete Chapter)"]},
+  {id:15,name:"AITS-7",date:"2027-01-10",type:"AITS",
+   p:["Ray Optics","Wave Optics","Dual Nature of Radiation and Matter","Atoms","Semiconductors — Materials, Devices and Simple Circuits","Units and Measurements"],
+   c:["Biomolecules","Purification and Analysis of Organic Compound","Coordination Compounds","The d and f block Elements","Salt Analysis"],
+   m:["Vector Algebra","Three-dimensional Geometry","Binomial Theorem","Permutations and Combinations","Probability","Statistics"]},
+  {id:16,name:"AITS-8",date:"2027-01-13",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:17,name:"AITS-9",date:"2027-01-19",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:18,name:"AITS-10",date:"2027-01-20",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:19,name:"AITS-11",date:"2027-02-14",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:20,name:"AITS-12",date:"2027-02-21",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:21,name:"AITS-13",date:"2027-02-28",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:22,name:"AITS-14",date:"2027-03-07",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:23,name:"AITS-15",date:"2027-03-14",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:24,name:"AITS-16",date:"2027-03-21",type:"AITS",p:["Full Syllabus — As per NTA JEE Main"],c:["Full Syllabus — As per NTA JEE Main"],m:["Full Syllabus — As per NTA JEE Main"]},
+  {id:25,name:"AITS-17",date:"2027-03-28",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]},
+  {id:26,name:"AITS-18",date:"2027-04-06",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]},
+  {id:27,name:"AITS-19",date:"2027-04-18",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]},
+  {id:28,name:"AITS-20",date:"2027-04-27",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]},
+  {id:29,name:"AITS-21",date:"2027-05-02",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]},
+  {id:30,name:"AITS-22",date:"2027-05-16",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]},
+  {id:31,name:"AITS-23",date:"2027-05-17",type:"AITS",p:["Full Syllabus — As per NTA JEE Advanced"],c:["Full Syllabus — As per NTA JEE Advanced"],m:["Full Syllabus — As per NTA JEE Advanced"]}
+];
+
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const today=new Date();today.setHours(0,0,0,0);
+let curY=today.getFullYear(),curM=today.getMonth();
+let filter='all';
+let done=JSON.parse(localStorage.getItem('p_done')||'[]');
+let openS={};
+
+function tc(t){return t==='JEE Main'?'jm':t==='JEE Advanced'?'adv':'aits'}
+
+function filtered(){return filter==='all'?TESTS:TESTS.filter(t=>t.type===filter)}
+
+function testsOn(ds){return filtered().filter(t=>t.date===ds)}
+
+function ds(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+
+function daysTo(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  return Math.ceil((d-today)/86400000);
+}
+
+function fmtDate(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+}
+
+function updateHeader(){
+  const upco=TESTS.filter(t=>new Date(t.date+'T00:00:00')>=today&&!done.includes(t.id))
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(!upco.length){document.getElementById('nextDays').textContent='—';document.getElementById('nextName').textContent='All done!';return}
+  const n=upco[0];
+  const d=daysTo(n.date);
+  document.getElementById('nextDays').textContent=d===0?'Today!':d===1?'1 day':d+' days';
+  document.getElementById('nextName').textContent=n.name;
+}
+
+function updateProgress(){
+  const tot=TESTS.length,dn=done.length;
+  const pct=Math.round((dn/tot)*100);
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pSub').textContent=dn+' of '+tot+' done';
+  document.getElementById('pPct').textContent=pct+'%';
+}
+
+function render(){
+  document.getElementById('mLabel').textContent=MONTHS[curM];
+  document.getElementById('yLabel').textContent=curY;
+  const first=new Date(curY,curM,1).getDay();
+  const days=new Date(curY,curM+1,0).getDate();
+  const prevDays=new Date(curY,curM,0).getDate();
+  const total=Math.ceil((first+days)/7)*7;
+  let html='';
+  for(let i=0;i<total;i++){
+    let d,m,y,other=false;
+    if(i<first){d=prevDays-first+i+1;m=curM-1;y=curY;if(m<0){m=11;y--;}other=true;}
+    else if(i>=first+days){d=i-first-days+1;m=curM+1;y=curY;if(m>11){m=0;y++;}other=true;}
+    else{d=i-first+1;m=curM;y=curY;}
+    const dateStr=ds(y,m,d);
+    const isToday=new Date(dateStr+'T00:00:00').getTime()===today.getTime();
+    const tests=testsOn(dateStr);
+    const hasDone=tests.length>0&&tests.every(t=>done.includes(t.id));
+    let cls='cell'+(other?' other':'')+(isToday?' today':'')+(tests.length?' has-test':'');
+    let dots='';
+    if(tests.length){
+      dots='<div class="dots">';
+      tests.forEach(t=>{dots+=`<div class="dot ${hasDone?'done':tc(t.type)}"></div>`;});
+      dots+='</div>';
+    }
+    const check=hasDone?'<div class="cell-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>':'';
+    const click=tests.length?`onclick="openSheet('${dateStr}')"` : '';
+    const numHtml=isToday?`<div class="cell-num"><div style="width:26px;height:26px;background:var(--orange);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">${d}</div></div>`:`<div class="cell-num">${d}</div>`;
+    html+=`<div class="${cls}" ${click}>${check}${numHtml}${dots}</div>`;
+  }
+  document.getElementById('grid').innerHTML=html;
+}
+
+function openSheet(dateStr){
+  const tests=testsOn(dateStr);
+  if(!tests.length)return;
+  const t=tests[0];
+  const isDone=done.includes(t.id);
+  const d=daysTo(t.date);
+  const type=tc(t.type);
+  let countdown='';
+  if(d<0)countdown=`<strong>${Math.abs(d)} days ago</strong>`;
+  else if(d===0)countdown=`<strong>Today!</strong>`;
+  else countdown=`<strong>${d} days</strong> to go`;
+
+  const subjects=[
+    {key:'p',label:'Physics',cls:'p',color:'#0A84FF',
+     icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#0A84FF" stroke-width="2"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>`},
+    {key:'c',label:'Chemistry',cls:'c',color:'#FF9500',
+     icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2"><path d="M9 3h6v10l4 8H5l4-8V3z"/></svg>`},
+    {key:'m',label:'Mathematics',cls:'m',color:'#BF5AF2',
+     icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#BF5AF2" stroke-width="2"><path d="M4 6h16M4 12h8M4 18h12"/></svg>`}
+  ];
+
+  let sylHTML='';
+  subjects.forEach(s=>{
+    const topics=t[s.key]||[];
+    const isOpen=openS[t.id+'_'+s.key];
+    sylHTML+=`
+    <div class="subject-card">
+      <div class="subj-hdr" onclick="toggleS(${t.id},'${s.key}')">
+        <div class="subj-left">
+          <div class="subj-icon ${s.cls}">${s.icon}</div>
+          <div>
+            <div class="subj-name">${s.label}</div>
+            <div class="subj-count">${topics.length} topic${topics.length!==1?'s':''}</div>
+          </div>
+        </div>
+        <span class="subj-arrow ${isOpen?'open':''}">▼</span>
+      </div>
+      <div class="topics ${isOpen?'open':''}">
+        ${topics.map(tp=>`<div class="topic">${tp}</div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('sheetBody').innerHTML=`
+    <div class="sheet-badge ${type}"><span class="badge-dot"></span>${t.type}</div>
+    <div class="sheet-title">${t.name}</div>
+    <div class="sheet-date">${fmtDate(t.date)}</div>
+    <div class="sheet-countdown">${countdown}</div>
+    <button class="done-btn ${isDone?'marked':''}" onclick="toggleDone(${t.id})">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      ${isDone?'Completed ✓':'Mark as Completed'}
+    </button>
+    <div class="syl-label">Syllabus</div>
+    ${sylHTML}
+  `;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+}
+
+function closeSheet(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+}
+
+function toggleS(id,key){
+  const k=id+'_'+key;
+  openS[k]=!openS[k];
+  const el=document.querySelector(`.topics[data-sk="${k}"]`);
+  // Re-render sheet with same test
+  const testId=id;
+  const t=TESTS.find(x=>x.id===testId);
+  if(t) openSheet(t.date);
+}
+
+function toggleDone(id){
+  if(done.includes(id))done=done.filter(x=>x!==id);
+  else done.push(id);
+  localStorage.setItem('p_done',JSON.stringify(done));
+  updateProgress();updateHeader();render();
+  const t=TESTS.find(x=>x.id===id);
+  if(t)openSheet(t.date);
+}
+
+function setFilter(f,btn){
+  filter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
+function mv(dir){curM+=dir;if(curM>11){curM=0;curY++;}if(curM<0){curM=11;curY--;}render();}
+function goToday(){curY=today.getFullYear();curM=today.getMonth();render();}
+
+// PWA
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('installBar').style.display='flex';
+});
+function doInstall(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBar').style.display='none';});
+}
+window.addEventListener('appinstalled',()=>document.getElementById('installBar').style.display='none');
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(e=>console.log('SW:',e));
+}
+
+// Auto jump to first upcoming test
+const first=TESTS.find(t=>new Date(t.date+'T00:00:00')>=today);
+if(first){const d=new Date(first.date+'T00:00:00');curY=d.getFullYear();curM=d.getMonth();}
+
+render();updateHeader();updateProgress();
+</script>
+</body>
+</html>
